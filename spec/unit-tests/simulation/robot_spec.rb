@@ -268,7 +268,7 @@ describe Simulation::Robot do
       let(:facing_direction) { Simulation::Direction::NORTH }
 
       it "will ignore the  turn left command" do
-        allow(Simulation).to receive(:logger).and_return(logger)        
+        allow(Simulation).to receive(:logger).and_return(logger)
         expect(logger).to receive(:warn).with(/Ignoring command to turn left.*/)
         subject.turn_left
       end
@@ -321,6 +321,32 @@ describe Simulation::Robot do
 
           expect(subject.facing_direction).to eq(Simulation::Direction::SOUTH)
         end
+      end
+    end
+  end
+
+  describe "#report" do
+    context "when robot is not correctly placed" do
+      it "will ignore the report command" do
+        allow(Simulation).to receive(:logger).and_return(logger)
+        expect(logger).to receive(:warn).with(/Ignoring command to report.*/)
+
+        subject.report
+      end
+    end
+
+    context "when robot is correctly placed" do
+      let(:x_coordinate)     { 2 }
+      let(:y_coordinate)     { 5 }
+      let(:facing_direction) { Simulation::Direction::WEST }
+      let(:valid_position)   { double('Valid Position', :to_s => position) }
+
+      before(:each) do
+        subject.place(x_coordinate, y_coordinate, facing_direction)
+      end
+
+      it "will report" do
+        expect(subject.report).to eq("#{x_coordinate},#{y_coordinate},#{facing_direction}")
       end
     end
   end

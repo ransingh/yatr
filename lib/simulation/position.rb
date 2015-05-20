@@ -2,7 +2,7 @@ require 'simulation/direction'
 
 module Simulation
   class Position
-    attr_accessor :x_coordinate, :y_coordinate, :facing_direction
+    attr_reader :x_coordinate, :y_coordinate, :facing_direction
 
     def initialize(x_coordinate, y_coordinate, facing_direction)
       @x_coordinate     = x_coordinate

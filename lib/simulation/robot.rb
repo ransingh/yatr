@@ -67,6 +67,16 @@ module Simulation
       @position = Simulation::Position.new(x_coordinate, y_coordinate, new_facing_direction)
     end
 
+    def report
+      unless placed_correclty?
+        Simulation.logger.warn("Ignoring command to report as it is not positioned correctly.")
+        return
+      end
+
+      $stdout.puts "  Output: #{@position}"
+      "#{@position}"
+    end
+
     private
 
     def valid_placement?(x, y, facing_direction)
