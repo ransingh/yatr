@@ -175,11 +175,7 @@ describe Simulation::Robot do
         end
       end
 
-      context "and cannot move in the current direction" do
-        let(:x_coordinate) { 2 }
-        let(:y_coordinate) { 5 }
-        let(:facing_direction) { Simulation::Direction::NORTH }
-
+      shared_examples "cannot_move_with_current_direction" do
         it "does not move in that direction" do
           subject.move
 
@@ -193,6 +189,39 @@ describe Simulation::Robot do
           expect(subject.facing_direction).to eq(facing_direction)
         end
       end
+
+      context "cannot move in the NORTH direction" do
+        let(:x_coordinate) { 2 }
+        let(:y_coordinate) { 5 }
+        let(:facing_direction) { Simulation::Direction::NORTH }
+
+        it_behaves_like "cannot_move_with_current_direction"
+      end
+
+      context "cannot move in the EAST direction" do
+        let(:x_coordinate) { 5 }
+        let(:y_coordinate) { 3 }
+        let(:facing_direction) { Simulation::Direction::EAST }
+
+        it_behaves_like "cannot_move_with_current_direction"
+      end
+
+      context "cannot move in the SOUTH direction" do
+        let(:x_coordinate) { 5 }
+        let(:y_coordinate) { 0 }
+        let(:facing_direction) { Simulation::Direction::SOUTH }
+
+        it_behaves_like "cannot_move_with_current_direction"
+      end
+
+      context "cannot move in the WEST direction" do
+        let(:x_coordinate) { 0 }
+        let(:y_coordinate) { 4 }
+        let(:facing_direction) { Simulation::Direction::WEST }
+
+        it_behaves_like "cannot_move_with_current_direction"
+      end
+
     end
   end
 

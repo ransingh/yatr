@@ -10,7 +10,7 @@ describe Simulation::Command::Place do
 
     subject { Simulation::Command::Place.new(executor, x_coordinate, y_coordinate, facing_direction) }
 
-    it "calls place command on the executor with (x,y) coordinates and facing direct" do
+    it "calls place command on the executor with (x,y) coordinates and facing direction" do
       expect(executor).to receive(:place).once.with(x_coordinate, y_coordinate, facing_direction)
 
       subject.execute

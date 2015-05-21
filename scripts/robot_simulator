@@ -5,7 +5,7 @@ require 'bundler/setup'
 
 Bundler.require(:default)
 
-ENV["RACK_ENV"] ||= "production"
+ENV["APP_ENV"] ||= "production"
 
 $:.unshift File.expand_path(File.join(File.dirname(__FILE__), '..', 'lib'))
 
@@ -14,8 +14,11 @@ require 'command_interpretor'
 require 'simulation/robot'
 
 if __FILE__ == $0
+  # create Grid with known size dimensions
   grid  = Simulation::Grid.new(5,5)
+  # initialize the Robot with Grid to move on
   robot = Simulation::Robot.new(grid)
+
   cmd_interpretor = CommandInterpretor.new(robot)
   File.open("./scripts/command.txt").each_line do |cmd_str|
     begin
@@ -23,7 +26,7 @@ if __FILE__ == $0
     cmd = cmd_interpretor.interpret(cmd_str)
     cmd.execute
   rescue => e
-    Simulation.logger.error("Invalid command: #{cmd_str}. Ready for next command.")
+    Simulation.logger.error("Invalid command: #{cmd_str}. Reading next command.")
   end
   end
 end
