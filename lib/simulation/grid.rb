@@ -26,5 +26,14 @@ module Simulation
     def maximum_east_bound
       @x_dimension_size
     end
+
+    def coordinates_valid? x_coordinate, y_coordinate
+      (maximum_west_bound..maximum_east_bound) === x_coordinate &&
+      (maximum_south_bound..maximum_north_bound) === y_coordinate
+    end
+
+    def to_s
+      "East-West: (#{maximum_west_bound},#{maximum_east_bound}) - North-South: (#{maximum_north_bound},#{maximum_south_bound})"
+    end
   end
 end

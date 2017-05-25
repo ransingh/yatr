@@ -1,25 +1,28 @@
+require 'simulation'
 require 'simulation/grid'
 require 'simulation/position'
 require 'simulation/direction'
+require 'simulation/robot_direction'
 
 module Simulation
-  class InvalidPositionError < StandardError; end
 
   class Robot
     include Direction
     extend Forwardable
 
-    def_delegators :@position, :x_coordinate, :y_coordinate, :facing_direction
+    def_delegators :@position, :x_coordinate, :y_coordinate
+    def_delegator :@direction, :facing_direction
 
     def initialize(grid)
       @grid = grid
     end
 
     def place(x_coordinate, y_coordinate, facing_direction)
-      unless valid_placement?(x_coordinate, y_coordinate, facing_direction)
+      unless @grid.coordinates_valid?(x_coordinate, y_coordinate)
         raise InvalidPositionError,"Cannot place at (#{x_coordinate},#{y_coordinate}) facing #{facing_direction}."
       end
       @position = Position.new(x_coordinate, y_coordinate, facing_direction)
+      @direction = RobotDirection.new(facing_direction)
     end
 
     def placed_correclty?
@@ -27,10 +30,7 @@ module Simulation
     end
 
     def move
-      unless placed_correclty?
-        Simulation.logger.warn("Ignoring command to move as it is not positioned correctly.")
-        return
-      end
+      ensure_placed_correctly
 
       if next_move_valid?
         case facing_direction
@@ -49,22 +49,13 @@ module Simulation
     end
 
     def turn_left
-      unless placed_correclty?
-        Simulation.logger.warn("Ignoring command to turn left as it is not positioned correctly.")
-        return
-      end
-
-      new_facing_direction = rotate_left_from(facing_direction)
-      @position = Simulation::Position.new(x_coordinate, y_coordinate, new_facing_direction)
+      ensure_placed_correctly
+      @direction.turn_anti_clockwise
     end
 
     def turn_right
-      unless placed_correclty?
-        Simulation.logger.warn("Ignoring command to turn right as it is not positioned correctly.")
-        return
-      end
-      new_facing_direction = rotate_right_from(facing_direction)
-      @position = Simulation::Position.new(x_coordinate, y_coordinate, new_facing_direction)
+      ensure_placed_correctly
+      @direction.turn_clockwise
     end
 
     def report
@@ -79,35 +70,20 @@ module Simulation
 
     private
 
-    def valid_placement?(x, y, facing_direction)
-      return false unless x_coordinate_within_bounds?(x)
-      return false unless y_coordinate_within_bounds?(y)
-      return false unless facing_direction_valid?(facing_direction)
-      return true
-    end
-
-    def x_coordinate_within_bounds?(x_coordinate)
-      x_coordinate >= @grid.maximum_west_bound && x_coordinate <= @grid.maximum_east_bound
-    end
-
-    def y_coordinate_within_bounds?(y_coordinate)
-      y_coordinate >= @grid.maximum_south_bound && y_coordinate <= @grid.maximum_north_bound
-    end
-
-    def facing_direction_valid?(facing_direction)
-      direction_valid? facing_direction
+    def ensure_placed_correctly
+      raise Simulation::InvalidStateError, "Robot not placed correctly" unless placed_correclty?
     end
 
     def next_move_valid?
       case facing_direction
       when Simulation::Direction::NORTH
-        y_coordinate + 1 <= @grid.maximum_north_bound
+        @grid.coordinates_valid?(x_coordinate, y_coordinate + 1)
       when Simulation::Direction::EAST
-        x_coordinate + 1 <= @grid.maximum_east_bound
+        @grid.coordinates_valid?(x_coordinate + 1, y_coordinate)
       when Simulation::Direction::SOUTH
-        y_coordinate - 1 >= @grid.maximum_south_bound
+        @grid.coordinates_valid?(x_coordinate, y_coordinate - 1)
       when Simulation::Direction::WEST
-        x_coordinate - 1 >= @grid.maximum_west_bound
+        @grid.coordinates_valid?(x_coordinate - 1, y_coordinate)
       else
         false
       end

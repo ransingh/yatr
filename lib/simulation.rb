@@ -34,4 +34,9 @@ module Simulation
   def self.environment
     ENV.fetch("APP_ENV", "development").to_sym
   end
+
+  class InvalidPositionError < StandardError; end
+  class InvalidStateError < StandardError; end
+  class InvalidDirectionError < StandardError; end
+
 end

@@ -84,11 +84,8 @@ describe Simulation::Robot do
       let(:y_coordinate) { 6 }
       let(:facing_direction) { Simulation::Direction::NORTH }
 
-      it "will ignore the move command" do
-        allow(Simulation).to receive(:logger).and_return(logger)
-        expect(logger).to receive(:warn).with(/Ignoring command to move.*/)
-
-        subject.move
+      it "raises invalid state error" do
+        expect { subject.move }.to raise_error Simulation::InvalidStateError
       end
     end
 
@@ -228,12 +225,8 @@ describe Simulation::Robot do
       let(:x_coordinate) { 2 }
       let(:y_coordinate) { 6 }
 
-      it "will ignore the turn right command" do
-        allow(Simulation).to receive(:logger).and_return(logger)
-        expect(logger).to receive(:warn).with(/Ignoring command to turn right.*/)
-
-        subject.turn_right
-
+      it "raises invalid state error" do
+        expect { subject.turn_right }.to raise_error Simulation::InvalidStateError
       end
     end
 
@@ -270,10 +263,8 @@ describe Simulation::Robot do
       let(:y_coordinate) { 6 }
       let(:facing_direction) { Simulation::Direction::NORTH }
 
-      it "will ignore the  turn left command" do
-        allow(Simulation).to receive(:logger).and_return(logger)
-        expect(logger).to receive(:warn).with(/Ignoring command to turn left.*/)
-        subject.turn_left
+      it "raises invalid state error" do
+        expect { subject.turn_left }.to raise_error Simulation::InvalidStateError
       end
     end
 
@@ -297,7 +288,7 @@ describe Simulation::Robot do
 
       it "on turning left changes its direction as expected" do
         subject.turn_left
-
+        puts "trying this -- #{initial_next_direction_pair}"
         expect(subject.facing_direction).to eq(next_direction)
       end
     end
