@@ -37,5 +37,6 @@ group 'unit-tests' do
     watch(%r{^lib/(.+)\.rb$}) {|m| "spec/unit-tests/#{m[1]}_spec.rb"}
     watch(%r{^spec/unit-tests/(.+)_spec\.rb$})
     watch(%r{^spec/spec_helper\.rb$}) {|m| "spec"}
+    watch(%r{^lib/simulation/direction\.rb$}) {|m| "spec"}
   end
 end
