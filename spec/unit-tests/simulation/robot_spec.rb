@@ -1,8 +1,6 @@
 require 'spec_helper'
 require 'simulation/grid'
-
 require 'simulation/direction'
-
 require 'simulation/robot'
 
 describe Simulation::Robot do
@@ -230,7 +228,7 @@ describe Simulation::Robot do
       let(:x_coordinate) { 2 }
       let(:y_coordinate) { 6 }
 
-      it "will ignore the  turn right command" do
+      it "will ignore the turn right command" do
         allow(Simulation).to receive(:logger).and_return(logger)
         expect(logger).to receive(:warn).with(/Ignoring command to turn right.*/)
 
@@ -243,54 +241,30 @@ describe Simulation::Robot do
       let(:x_coordinate) { 2 }
       let(:y_coordinate) { 5 }
 
+      let(:initial_next_direction_pair) do
+        Simulation::Direction::DIRECTIONS
+          .zip(Simulation::Direction::DIRECTIONS.rotate)
+          .shuffle
+          .first
+      end
+
+      let(:facing_direction) {initial_next_direction_pair.first}
+      let(:next_direction) {initial_next_direction_pair.last}
 
       before(:each) do
         subject.place(x_coordinate, y_coordinate, facing_direction)
       end
 
-      context "and it is facing NORTH" do
-        let(:facing_direction) { Simulation::Direction::NORTH }
+      it "on turning right changes its direction as expected" do
+        subject.turn_right
 
-        it "on turning right changes its direction to EAST" do
-          subject.turn_right
-
-          expect(subject.facing_direction).to eq(Simulation::Direction::EAST)
-        end
-      end
-
-      context "and it is facing EAST" do
-        let(:facing_direction) { Simulation::Direction::EAST }
-
-        it "on turning right changes its direction to SOUTH" do
-          subject.turn_right
-
-          expect(subject.facing_direction).to eq(Simulation::Direction::SOUTH)
-        end
-      end
-
-      context "and it is facing SOUTH" do
-        let(:facing_direction) { Simulation::Direction::SOUTH }
-
-        it "on turning right changes its direction to WEST" do
-          subject.turn_right
-
-          expect(subject.facing_direction).to eq(Simulation::Direction::WEST)
-        end
-      end
-
-      context "and it is facing WEST" do
-        let(:facing_direction) { Simulation::Direction::WEST }
-
-        it "on turning right changes its direction to NORTH" do
-          subject.turn_right
-
-          expect(subject.facing_direction).to eq(Simulation::Direction::NORTH)
-        end
+        expect(subject.facing_direction).to eq(next_direction)
       end
     end
   end
 
   describe "#turn_left" do
+
     context "when robot is not correctly placed" do
       let(:x_coordinate) { 2 }
       let(:y_coordinate) { 6 }
@@ -307,49 +281,24 @@ describe Simulation::Robot do
       let(:x_coordinate) { 2 }
       let(:y_coordinate) { 5 }
 
+      let(:initial_next_direction_pair) do
+        Simulation::Direction::DIRECTIONS
+          .zip(Simulation::Direction::DIRECTIONS.rotate(-1))
+          .shuffle
+          .first
+      end
+
+      let(:facing_direction) {initial_next_direction_pair.first}
+      let(:next_direction) {initial_next_direction_pair.last}
 
       before(:each) do
         subject.place(x_coordinate, y_coordinate, facing_direction)
       end
 
-      context "and it is facing NORTH" do
-        let(:facing_direction) { Simulation::Direction::NORTH }
+      it "on turning left changes its direction as expected" do
+        subject.turn_left
 
-        it "on turning right changes its direction to WEST" do
-          subject.turn_left
-
-          expect(subject.facing_direction).to eq(Simulation::Direction::WEST)
-        end
-      end
-
-      context "and it is facing EAST" do
-        let(:facing_direction) { Simulation::Direction::EAST }
-
-        it "on turning right changes its direction to NORTH" do
-          subject.turn_left
-
-          expect(subject.facing_direction).to eq(Simulation::Direction::NORTH)
-        end
-      end
-
-      context "and it is facing SOUTH" do
-        let(:facing_direction) { Simulation::Direction::SOUTH }
-
-        it "on turning right changes its direction to EAST" do
-          subject.turn_left
-
-          expect(subject.facing_direction).to eq(Simulation::Direction::EAST)
-        end
-      end
-
-      context "and it is facing WEST" do
-        let(:facing_direction) { Simulation::Direction::WEST }
-
-        it "on turning right changes its direction to SOUTH" do
-          subject.turn_left
-
-          expect(subject.facing_direction).to eq(Simulation::Direction::SOUTH)
-        end
+        expect(subject.facing_direction).to eq(next_direction)
       end
     end
   end

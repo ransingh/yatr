@@ -95,7 +95,7 @@ module Simulation
     end
 
     def facing_direction_valid?(facing_direction)
-      facing_direction[/^(#{Direction::NORTH}|#{Direction::EAST}|#{Direction::WEST}|#{Direction::SOUTH})$/]
+      direction_valid? facing_direction
     end
 
     def next_move_valid?
