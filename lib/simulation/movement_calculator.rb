@@ -10,24 +10,24 @@ module Simulation
 
     def next_position
       if @direction.facing_east?
-        x_coordinate, y_coordinate = @position.x_coordinate + 1, @position.y_coordinate
+        position = @position.right
       elsif @direction.facing_west?
-        x_coordinate, y_coordinate = @position.x_coordinate - 1, @position.y_coordinate
+        position = @position.left
       elsif @direction.facing_north?
-        x_coordinate, y_coordinate = @position.x_coordinate, @position.y_coordinate + 1
+        position = @position.up
       elsif @direction.facing_south?
-        x_coordinate, y_coordinate = @position.x_coordinate, @position.y_coordinate - 1
+        position = @position.down
       end
 
-      validate_direction!(x_coordinate, y_coordinate)
-      create_position(x_coordinate, y_coordinate)
+      validate_position!(position)
+      position
     end
 
     private
 
-    def validate_direction!(x_coordinate, y_coordinate)
-      unless @grid.coordinates_valid?(x_coordinate, y_coordinate)
-        raise Simulation::InvalidPositionError, "(#{x_coordinate},#{y_coordinate}) are out of grid(#{@grid})"
+    def validate_position!(position)
+      unless @grid.coordinates_valid?(position.x_coordinate, position.y_coordinate)
+        raise Simulation::InvalidPositionError, "(#{position.x_coordinate},#{position.y_coordinate}) are out of grid(#{@grid})"
       end
     end
 
