@@ -1,16 +1,15 @@
 require 'spec_helper'
 require 'simulation/grid'
-require 'simulation/direction'
 require 'simulation/robot'
 
 describe Simulation::Robot do
   let(:logger) { double('logger') }
-  let(:grid)   { Simulation::Grid.new(5,5) }
+  let(:grid) { Simulation::Grid.new(5,5) }
 
   subject { Simulation::Robot.new(grid) }
 
   describe "#place" do
-    let(:facing_direction) { Simulation::Direction::NORTH }
+    let(:facing_direction) { 'NORTH' }
 
     context "when the given position is not valid" do
       context "when x_coordinate beyond maximum west bound" do
@@ -39,7 +38,7 @@ describe Simulation::Robot do
         end
       end
 
-      context "when y_coordinate is beyond maximum north bound" do
+      context "when y_coordinate is beyond maximum NORTH bound" do
         let(:x_coordinate) { 2 }
         let(:y_coordinate) { 6 }
 
@@ -72,7 +71,8 @@ describe Simulation::Robot do
 
       it "places the robot" do
         subject.place(x_coordinate, y_coordinate, facing_direction)
-        expect( subject.placed_correclty? ).to be_truthy
+        expect(subject.x_coordinate).to eq(x_coordinate)
+        expect(subject.y_coordinate).to eq(y_coordinate)
       end
     end
   end
@@ -82,7 +82,7 @@ describe Simulation::Robot do
     context "when robot is not correctly placed" do
       let(:x_coordinate) { 2 }
       let(:y_coordinate) { 6 }
-      let(:facing_direction) { Simulation::Direction::NORTH }
+      let(:facing_direction) { 'NORTH' }
 
       it "raises invalid state error" do
         expect { subject.move }.to raise_error Simulation::InvalidStateError
@@ -97,7 +97,7 @@ describe Simulation::Robot do
       context "and can move in the NORTH direction" do
         let(:x_coordinate) { 2 }
         let(:y_coordinate) { 4 }
-        let(:facing_direction) { Simulation::Direction::NORTH }
+        let(:facing_direction) { 'NORTH' }
 
         it "moves in that direction" do
           subject.move
@@ -116,7 +116,7 @@ describe Simulation::Robot do
       context "and can move in the SOUTH direction" do
         let(:x_coordinate) { 2 }
         let(:y_coordinate) { 4 }
-        let(:facing_direction) { Simulation::Direction::SOUTH }
+        let(:facing_direction) { 'SOUTH' }
 
         it "moves in that direction" do
           subject.move
@@ -135,7 +135,7 @@ describe Simulation::Robot do
       context "and can move in the WEST direction" do
         let(:x_coordinate) { 2 }
         let(:y_coordinate) { 4 }
-        let(:facing_direction) { Simulation::Direction::WEST }
+        let(:facing_direction) { 'WEST' }
 
         it "moves in that direction" do
           subject.move
@@ -154,7 +154,7 @@ describe Simulation::Robot do
       context "and can move in the WEST direction" do
         let(:x_coordinate) { 2 }
         let(:y_coordinate) { 4 }
-        let(:facing_direction) { Simulation::Direction::EAST }
+        let(:facing_direction) { 'EAST' }
 
         it "moves in that direction" do
           subject.move
@@ -188,7 +188,7 @@ describe Simulation::Robot do
       context "cannot move in the NORTH direction" do
         let(:x_coordinate) { 2 }
         let(:y_coordinate) { 5 }
-        let(:facing_direction) { Simulation::Direction::NORTH }
+        let(:facing_direction) { 'NORTH' }
 
         it_behaves_like "cannot_move_with_current_direction"
       end
@@ -196,7 +196,7 @@ describe Simulation::Robot do
       context "cannot move in the EAST direction" do
         let(:x_coordinate) { 5 }
         let(:y_coordinate) { 3 }
-        let(:facing_direction) { Simulation::Direction::EAST }
+        let(:facing_direction) { 'EAST' }
 
         it_behaves_like "cannot_move_with_current_direction"
       end
@@ -204,7 +204,7 @@ describe Simulation::Robot do
       context "cannot move in the SOUTH direction" do
         let(:x_coordinate) { 5 }
         let(:y_coordinate) { 0 }
-        let(:facing_direction) { Simulation::Direction::SOUTH }
+        let(:facing_direction) { 'SOUTH' }
 
         it_behaves_like "cannot_move_with_current_direction"
       end
@@ -212,7 +212,7 @@ describe Simulation::Robot do
       context "cannot move in the WEST direction" do
         let(:x_coordinate) { 0 }
         let(:y_coordinate) { 4 }
-        let(:facing_direction) { Simulation::Direction::WEST }
+        let(:facing_direction) { 'WEST' }
 
         it_behaves_like "cannot_move_with_current_direction"
       end
@@ -221,6 +221,7 @@ describe Simulation::Robot do
   end
 
   describe "#turn_right" do
+    DIRECTIONS = %w{ NORTH NORTH_EAST EAST SOUTH_EAST SOUTH SOUTH_WEST WEST NORTH_WEST }
     context "when robot is not correctly placed" do
       let(:x_coordinate) { 2 }
       let(:y_coordinate) { 6 }
@@ -235,8 +236,8 @@ describe Simulation::Robot do
       let(:y_coordinate) { 5 }
 
       let(:initial_next_direction_pair) do
-        Simulation::Direction::DIRECTIONS
-          .zip(Simulation::Direction::DIRECTIONS.rotate)
+        DIRECTIONS
+          .zip(DIRECTIONS.rotate)
           .shuffle
           .first
       end
@@ -257,11 +258,11 @@ describe Simulation::Robot do
   end
 
   describe "#turn_left" do
-
+    DIRECTIONS = %w{ NORTH NORTH_EAST EAST SOUTH_EAST SOUTH SOUTH_WEST WEST NORTH_WEST }
     context "when robot is not correctly placed" do
       let(:x_coordinate) { 2 }
       let(:y_coordinate) { 6 }
-      let(:facing_direction) { Simulation::Direction::NORTH }
+      let(:facing_direction) { 'NORTH' }
 
       it "raises invalid state error" do
         expect { subject.turn_left }.to raise_error Simulation::InvalidStateError
@@ -273,8 +274,8 @@ describe Simulation::Robot do
       let(:y_coordinate) { 5 }
 
       let(:initial_next_direction_pair) do
-        Simulation::Direction::DIRECTIONS
-          .zip(Simulation::Direction::DIRECTIONS.rotate(-1))
+        DIRECTIONS
+          .zip(DIRECTIONS.rotate(-1))
           .shuffle
           .first
       end
@@ -288,7 +289,6 @@ describe Simulation::Robot do
 
       it "on turning left changes its direction as expected" do
         subject.turn_left
-        puts "trying this -- #{initial_next_direction_pair}"
         expect(subject.facing_direction).to eq(next_direction)
       end
     end
@@ -307,7 +307,7 @@ describe Simulation::Robot do
     context "when robot is correctly placed" do
       let(:x_coordinate)     { 2 }
       let(:y_coordinate)     { 5 }
-      let(:facing_direction) { Simulation::Direction::WEST }
+      let(:facing_direction) { 'WEST' }
       let(:valid_position)   { double('Valid Position', :to_s => position) }
 
       before(:each) do

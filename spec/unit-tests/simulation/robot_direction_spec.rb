@@ -23,6 +23,75 @@ describe Simulation::RobotDirection do
     end
   end
 
+
+  describe "#facing_north?" do
+    subject { described_class.new(current_direction).facing_north?  }
+
+    context 'when facing NORTH' do
+      let(:current_direction) { 'NORTH' }
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'when not facing NORTH' do
+      let(:current_direction) { DIRECTIONS.select{|d| d !='NORTH'}.shuffle.first }
+
+      it { is_expected.to be_falsey }
+    end
+
+  end
+
+  describe "#facing_east?" do
+    subject { described_class.new(current_direction).facing_east?  }
+
+    context 'when facing EAST' do
+      let(:current_direction) { 'EAST' }
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'when not facing EAST' do
+      let(:current_direction) { DIRECTIONS.select{|d| d !='EAST'}.shuffle.first }
+
+      it { is_expected.to be_falsey }
+    end
+
+  end
+
+  describe "#facing_west?" do
+    subject { described_class.new(current_direction).facing_west?  }
+
+    context 'when facing WEST' do
+      let(:current_direction) { 'WEST' }
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'when not facing WEST' do
+      let(:current_direction) { DIRECTIONS.select{|d| d !='WEST'}.shuffle.first }
+
+      it { is_expected.to be_falsey }
+    end
+
+  end
+
+  describe "#facing_south?" do
+    subject { described_class.new(current_direction).facing_south?  }
+
+    context 'when facing SOUTH' do
+      let(:current_direction) { 'SOUTH' }
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'when not facing SOUTH' do
+      let(:current_direction) { DIRECTIONS.select{|d| d !='SOUTH'}.shuffle.first }
+
+      it { is_expected.to be_falsey }
+    end
+
+  end
+
   context 'on turning clockwise' do
 
     shared_examples 'turn_clockwise' do |initial_direction, next_direction|

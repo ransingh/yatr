@@ -1,13 +1,12 @@
 require 'simulation'
 require 'simulation/grid'
 require 'simulation/position'
-require 'simulation/direction'
 require 'simulation/robot_direction'
+require 'simulation/movement_calculator'
 
 module Simulation
 
   class Robot
-    include Direction
     extend Forwardable
 
     def_delegators :@position, :x_coordinate, :y_coordinate
@@ -18,34 +17,18 @@ module Simulation
     end
 
     def place(x_coordinate, y_coordinate, facing_direction)
-      unless @grid.coordinates_valid?(x_coordinate, y_coordinate)
+      unless can_place?(x_coordinate, y_coordinate)
         raise InvalidPositionError,"Cannot place at (#{x_coordinate},#{y_coordinate}) facing #{facing_direction}."
       end
-      @position = Position.new(x_coordinate, y_coordinate, facing_direction)
+      @position = Position.new(x_coordinate, y_coordinate)
       @direction = RobotDirection.new(facing_direction)
-    end
-
-    def placed_correclty?
-      !!@position
     end
 
     def move
       ensure_placed_correctly
-
-      if next_move_valid?
-        case facing_direction
-        when Simulation::Direction::NORTH
-          @position = Simulation::Position.new(x_coordinate, y_coordinate + 1, facing_direction)
-        when Simulation::Direction::SOUTH
-          @position = Simulation::Position.new(x_coordinate, y_coordinate - 1, facing_direction)
-        when Simulation::Direction::WEST
-          @position = Simulation::Position.new(x_coordinate - 1, y_coordinate, facing_direction)
-        when Simulation::Direction::EAST
-          @position = Simulation::Position.new(x_coordinate + 1, y_coordinate, facing_direction)
-        else
-          raise InvalidStateError, "Robot in invalid direction"
-        end
-      end
+      movement_calculator = Simulation::MovementCalculator.new(@position, @direction, @grid)
+      @position = movement_calculator.next_position
+    rescue Simulation::InvalidPositionError => ipe
     end
 
     def turn_left
@@ -64,29 +47,22 @@ module Simulation
         return
       end
 
-      $stdout.puts "  Output: #{@position}"
-      "#{@position}"
+      $stdout.puts "  Output: #{@position}, #{@direction}"
+      "#{@position},#{@direction}"
     end
 
     private
 
-    def ensure_placed_correctly
-      raise Simulation::InvalidStateError, "Robot not placed correctly" unless placed_correclty?
+    def placed_correclty?
+      !!@position
     end
 
-    def next_move_valid?
-      case facing_direction
-      when Simulation::Direction::NORTH
-        @grid.coordinates_valid?(x_coordinate, y_coordinate + 1)
-      when Simulation::Direction::EAST
-        @grid.coordinates_valid?(x_coordinate + 1, y_coordinate)
-      when Simulation::Direction::SOUTH
-        @grid.coordinates_valid?(x_coordinate, y_coordinate - 1)
-      when Simulation::Direction::WEST
-        @grid.coordinates_valid?(x_coordinate - 1, y_coordinate)
-      else
-        false
-      end
+    def can_place? x_coordinate, y_coordinate
+      @grid.coordinates_valid?(x_coordinate, y_coordinate)
+    end
+
+    def ensure_placed_correctly
+      raise Simulation::InvalidStateError, "Robot not placed correctly" unless placed_correclty?
     end
   end
 end
