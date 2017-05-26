@@ -1,7 +1,7 @@
 require 'simulation'
 require 'simulation/grid'
 require 'simulation/position'
-require 'simulation/robot_direction'
+require 'simulation/direction'
 require 'simulation/movement_calculator'
 
 module Simulation
@@ -21,7 +21,7 @@ module Simulation
         raise InvalidPositionError,"Cannot place at (#{x_coordinate},#{y_coordinate}) facing #{facing_direction}."
       end
       @position = Position.new(x_coordinate, y_coordinate)
-      @direction = RobotDirection.new(facing_direction)
+      @direction = Direction.new(facing_direction)
     end
 
     def move

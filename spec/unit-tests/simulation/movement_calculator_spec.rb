@@ -2,7 +2,7 @@ require 'spec_helper'
 require 'simulation'
 require 'simulation/grid'
 require 'simulation/position'
-require 'simulation/robot_direction'
+require 'simulation/direction'
 require 'simulation/movement_calculator'
 
 describe Simulation::MovementCalculator do
@@ -19,7 +19,7 @@ describe Simulation::MovementCalculator do
       let(:current_position) { Simulation::Position.new(x_coordinate, y_coordinate) }
 
       context 'when facing east direction' do
-        let(:current_direction) { Simulation::RobotDirection.new('EAST') }
+        let(:current_direction) { Simulation::Direction.new('EAST') }
 
         it 'increments the x coordinate by 1' do
           next_position = subject.next_position
@@ -33,7 +33,7 @@ describe Simulation::MovementCalculator do
       end
 
       context 'when facing west direction' do
-        let(:current_direction) { Simulation::RobotDirection.new('WEST') }
+        let(:current_direction) { Simulation::Direction.new('WEST') }
 
         it 'decrements the x coordinate by 1' do
           next_position = subject.next_position
@@ -47,7 +47,7 @@ describe Simulation::MovementCalculator do
       end
 
       context 'when facing north direction' do
-        let(:current_direction) { Simulation::RobotDirection.new('NORTH') }
+        let(:current_direction) { Simulation::Direction.new('NORTH') }
 
         it 'increments the y coordinate by 1' do
           next_position = subject.next_position
@@ -61,7 +61,7 @@ describe Simulation::MovementCalculator do
       end
 
       context 'when facing south direction' do
-        let(:current_direction) { Simulation::RobotDirection.new('SOUTH') }
+        let(:current_direction) { Simulation::Direction.new('SOUTH') }
 
         it 'decrements the y coordinate by 1' do
           next_position = subject.next_position
@@ -80,7 +80,7 @@ describe Simulation::MovementCalculator do
         let(:x_coordinate) { 5 }
         let(:y_coordinate) { 1 }
         let(:current_position) { Simulation::Position.new(x_coordinate, y_coordinate) }
-        let(:current_direction) { Simulation::RobotDirection.new('EAST') }
+        let(:current_direction) { Simulation::Direction.new('EAST') }
 
         it 'raise invalid position error' do
           expect { subject.next_position }.to raise_error Simulation::InvalidPositionError
@@ -91,7 +91,7 @@ describe Simulation::MovementCalculator do
         let(:x_coordinate) { 0 }
         let(:y_coordinate) { 1 }
         let(:current_position) { Simulation::Position.new(x_coordinate, y_coordinate) }
-        let(:current_direction) { Simulation::RobotDirection.new('WEST') }
+        let(:current_direction) { Simulation::Direction.new('WEST') }
 
         it 'raise invalid position error' do
           expect { subject.next_position }.to raise_error Simulation::InvalidPositionError
@@ -102,7 +102,7 @@ describe Simulation::MovementCalculator do
         let(:x_coordinate) { 1 }
         let(:y_coordinate) { 5 }
         let(:current_position) { Simulation::Position.new(x_coordinate, y_coordinate) }
-        let(:current_direction) { Simulation::RobotDirection.new('NORTH') }
+        let(:current_direction) { Simulation::Direction.new('NORTH') }
 
         it 'raise invalid position error' do
           expect { subject.next_position }.to raise_error Simulation::InvalidPositionError
@@ -113,7 +113,7 @@ describe Simulation::MovementCalculator do
         let(:x_coordinate) { 1 }
         let(:y_coordinate) { 0 }
         let(:current_position) { Simulation::Position.new(x_coordinate, y_coordinate) }
-        let(:current_direction) { Simulation::RobotDirection.new('SOUTH') }
+        let(:current_direction) { Simulation::Direction.new('SOUTH') }
 
         it 'raise invalid position error' do
           expect { subject.next_position }.to raise_error Simulation::InvalidPositionError

@@ -1,7 +1,7 @@
 require 'spec_helper'
-require 'simulation/robot_direction'
+require 'simulation/direction'
 
-describe Simulation::RobotDirection do
+describe Simulation::Direction do
   DIRECTIONS = %w{ NORTH NORTH_EAST EAST SOUTH_EAST SOUTH SOUTH_WEST WEST NORTH_WEST }
 
   describe '.new' do

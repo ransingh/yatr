@@ -1,7 +1,7 @@
 require 'simulation'
 
 module Simulation
-  class RobotDirection
+  class Direction
 
     attr_reader :facing_direction
 
